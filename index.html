@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SW1</title>
+
+    <style>
+
+        body{
+            background-color: rgb(255, 222, 222);
+            background-image: url('westeros_map.webp'); 
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+
+        }
+
+        .subject-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+    }
+    .rounded-img {
+    border-radius: 12px; 
+}
+    #mainbody{
+        background-color: rgba(255, 255, 255, 0.67);
+        border-width: medium;
+        border-radius: 12px;
+        border-color: black;
+        border-style: solid;
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+        width: 90%;
+        max-width: 1000px;
+        font-family: sans-serif;
+    }
+
+    .row{
+            flex: 25%;
+            padding: 25px;
+            text-align:center;
+        }
+
+        .divider {
+            width: 450px;
+            height: 10px;
+            background: linear-gradient(10deg, #EAB64D, #930416);
+            margin: 14px 0 20px 0;
+            border-radius: 2px;
+        }
+
+        .divider2 {
+            width: 1000px;
+            height: 10px;
+            background: linear-gradient(10deg, #EAB64D, #a32927);
+            margin: 14px 0 20px 0;
+            border-radius: 2px;
+        }
+
+        .divider3 {
+            width: 200px;
+            height: 10px;
+            background: linear-gradient(10deg, #EAB64D, #930416);
+            margin: 14px 0 20px 0;
+            border-radius: 6px;
+        }
+       
+
+#institution{
+    background-color: rgba(238, 229, 173);
+    border-width: medium;
+    border-radius: 12px;
+    border-color: black;
+    border-style: solid;
+    padding: 30px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
+
+}
+
+#classmates-list-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-width: medium;
+            border-radius: 12px;
+            border-color: #930416;
+            border-style: solid;
+            padding: 30px;
+            margin: 30px auto;
+            width: 90%;
+            max-width: 1000px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        #classmates-list-container.show {
+            display: block;
+        }
+
+        #classmates-list-container h3 {
+            color: #930416;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .classmates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .classmate-item {
+            background-color: rgba(147, 4, 22, 0.05);
+            border-left: 4px solid #930416;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .classmate-item strong {
+            color: #930416;
+        }
+    </style>
+
+<py-config>
+    packages = []
+    files = ["main.py"]
+</py-config>
+
+</head>
+<body>
+    
+<br><br><br><br><br>
+
+                <div class="container" id="institution">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Grade 10 Classmates System
+                        </h2>
+                        <p>Add and view your classmates more easily.</p>
+                        <div class="divider mx-auto"></div>
+                    </div>
+                    <div class="row align-items-center gx-5">
+                        <form>
+                            <br>
+                            <label>First Name:</label> <br>
+                            <input type="text" id="fname" class="form-control" placeholder="First name"> 
+                            <label>Last Name:</label> <br>
+                            <input type="text" id="lname" class="form-control" placeholder="Surname"> 
+                            <label>Place:</label> <br>
+                            <input type="text" id="place" class="form-control" placeholder="Place"> 
+                        </form>
+                    
+                        <div class="row">
+                            <div class="row">
+                                <button type="button" id="addBtn"class="btn btn-primary"  py-click="add_classmate()">Add Classmate</button>
+                            </div>
+                
+                            <div class="row">
+                                <button type="button" id="showBtn" class="btn btn-success"  py-click="show_classmates()">Show List</button>
+                            </div>
+                        </div>
+                </div>
+            <br><br>
+            <div id="classmates-list-container">
+                <h3>Grade 10 Classmates</h3>
+                <div class="divider2 mx-auto"></div>
+                <div class="classmates-grid" id="classmates-grid">
+                    <!-- Classmates will be populated here -->
+                </div>
+            </div>
+            
+            <br><br><br>
+            
+            <py-script>
+            from js import document
+            classmates = [
+    {"name": "Max Ancheta", "place": "New York"},
+    {"name": "Alonso Asuncion", "place": "Heaven"},
+    {"name": "Enzo Battung", "place": "Spain"},
+    {"name": "Athena Catapang", "place": "Coachella"},
+    {"name": "Cade Chua", "place": "Japan"},
+    {"name": "Zyan Eusebio", "place": "Heaven"},
+    {"name": "Rad Evangelio", "place": "Houston, TX"},
+    {"name": "Mara Fado", "place": "Japan"},
+    {"name": "Curt Fernando", "place": "Bali"},
+    {"name": "Kleiser Fermocil", "place": "Canada"},
+    {"name": "Ethan Francia", "place": "Netherlands"},
+    {"name": "Sophia Jimenez", "place": "London"},
+    {"name": "AC Mactal", "place": "Japan"},
+    {"name": "Soleil Magday", "place": "Anywhere"},
+    {"name": "Javi Mabilog", "place": "Disneyworld"},
+    {"name": "Yanna Moya", "place": "Italy"},
+    {"name": "Zoe Mutia", "place": "Vienna, Austria"},
+    {"name": "Luis Nazareno", "place": "Hawaii"},
+    {"name": "Inigo Romero", "place": "Nigeria"},
+    {"name": "Jaedin Sarao", "place": "Switzerland"},
+    {"name": "Kyler Santos", "place": "Krusty Krab"},
+    {"name": "Charlotte Sy", "place": "Coachella"},
+    {"name": "Briana Sy", "place": "Rome"},
+    {"name": "Jared Udono", "place": "Japan"},
+    {"name": "KC Vida", "place": "Monaco"}
+]
+            
+            def display_classmates():
+                """Display all classmates in the grid"""
+                grid = document.getElementById('classmates-grid')
+                grid.innerHTML = ''
+                
+                for index, classmate in enumerate(classmates, 1):
+                    item = document.createElement('div')
+                    item.className = 'classmate-item'
+                    item.innerHTML = f"<strong>{index}. {classmate['name']}</strong> – {classmate['place']}"
+                    grid.appendChild(item)
+            
+            def show_classmates():
+                """Show the classmates list"""
+                container = document.getElementById('classmates-list-container')
+                container.classList.add('show')
+                display_classmates()
+            
+            def add_classmate():
+                """Add a new classmate to the list"""
+                fname = document.getElementById('fname').value
+                lname = document.getElementById('lname').value
+                place = document.getElementById('place').value
+                
+                if fname and lname and place:
+                    classmates.append({
+    "name": f"{fname or 'Unknown'} {lname or ''}",
+    "place": place or 'Unknown'
+})
+                    
+                    # Clear the form
+                    document.getElementById('fname').value = ''
+                    document.getElementById('lname').value = ''
+                    document.getElementById('place').value = ''
+                    
+                    # Show alert
+                    from js import alert
+                    alert(f'Classmate {fname} {lname} added successfully!')
+                    
+                    # Refresh the display if list is visible
+                    container = document.getElementById('classmates-list-container')
+                    if 'show' in container.className:
+                        display_classmates()
+                else:
+                    from js import alert
+                    alert('Please fill in all fields')
+
+                    document.getElementById("addBtn").onclick = add_classmate
+                    document.getElementById("showBtn").onclick = show_classmates
+            </py-script>
+<br><br><br><br><br><br><br><br>
+</body>
+</html>
